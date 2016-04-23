@@ -30,30 +30,32 @@ for i, row in enumerate(input):
         del row[1]
         if count > 0:
 
-            AL_Rows.append(repeat(row[0:2], count))
+            AL_Rows.append(repeat(row[0:2],count))
 
 print "1"
 ##################################################
 
 print "2"
+AL_Rows = map(str, AL_Rows)
 
 P_Temp = []
 W_Temp = []
 
 RPL = []
 
+p = "partially" in line
+v = "viable" in line
+w = "with" in line
 for line in AL_Rows:
-    p = "partially"in line
-    if not p:
-
+    if "partially" not in line:
         P_Temp.append(line)
 
+
 for line in P_Temp:
-    v = "viable" in line
-    w = "with" in line
-    if (v and w):
+
+    if "viable" in line and "with" in line:
         W_Temp.append(line)
-    elif (not w):
+    elif not "with" in line:
         W_Temp.append(line)
 #######################Are the 'Withs' Getting removed correctly?
 
@@ -74,66 +76,53 @@ print "2"
 GLO = []
 
 input = csv.reader(RPL, delimiter=',')
-
+print "3"
 for row in input:
 
 
 
     Temp = (str(row[0]))
+    Temp = Temp.split("'")[1].strip()
     Temp = Temp.split('[')[0].strip()
-
-    print Temp
-    print
-    GLO.append(Temp+','+str(row[1]+'\n'))
-
-
-
-#############################################################
-
-
-inputfile = open('./Gene&Lethality_Only.txt', mode='rb')
-outputfile = open('./Gene_With_Lethal&Viable_Only.txt', mode='wb')
-
-inputfile = csv.reader(inputfile, delimiter=',')
-
-for row in inputfile:
-
-
-    #del row[1]
-    Temp = (str(row[1]))
-    if "lethal" in Temp:
-        Temp = "lethal"
-    elif "viable" in Temp:
-        Temp = "viable"
+    if "viable" in row[1]:
+        row[1] = "viable"
+    elif "lethal" in row[1]:
+        row[1] = "lethal"
     else:
-        Temp = "other"
+        row[1] = "other"
 
 
-    outputfile.write(str(row[0]))
-    outputfile.write(",")
-    outputfile.write(Temp)
-    outputfile.write('\n')
+    print
+    GLO.append(Temp+','+str(row[1]))
+
+
 
 #############################################################
 
+
+
+
+
+
+
+input = csv.reader(GLO, delimiter=',')
 
 data = {}
-
-##########################################
-inputfile = open('./Gene_With_Lethal&Viable_Only.txt', mode='rb')
-outputfile = open('./Genes_With_All_Lethality.txt', mode='wb')
-
-for line in inputfile:
-    split_string = line.split(",")
-    genome = split_string [0]
-    lethalNotation = split_string [1]
-    data [genome] = data.get(genome,"")+lethalNotation.rstrip('\r\n')+","
+GAL = []
 
 
+
+for line in input:
+    genome = line[0]
+    lethalNotation = line[1]
+    data [genome] = data.get(genome,"")+lethalNotation+","
+
+outputfile = open('./Test.txt', mode='wb')
 for x in data:
+    GAL.append(x+","+data[x]+"\n")
     outputfile.write(x+","+data[x]+"\n")
 
-outputfile.close()
+
 
 
 
@@ -143,13 +132,14 @@ outputfile.close()
 
 
 
+input = csv.reader(GAL, delimiter=',')
 
 outputfile = open('./Single_Lethality_Genes.txt', mode='wb')
-inputfile = open('./Genes_With_All_Lethality.txt', mode='rb')
+
 essOutputfile = open('./Lethal_Fly.txt', mode='wb')
 
 
-for line in inputfile:
+for line in input:
     v = "viable" in line
     l = "lethal" in line
     o = "other" in line
@@ -158,28 +148,27 @@ for line in inputfile:
     if (l and v):
         print ("Ignoring Line")
     else:
-        line = line.rstrip()
-        bits = line.split(',')
+
         if(v) or (o) and not (l):
-            bit = bits[0]+",viable\n"
+            bit = line[0]+",viable\n"
             print (bit)
             outputfile.write(bit)
         elif(l) and (o):
-            bit = bits[0]+",lethal\n"
+            bit = line[0]+",lethal\n"
             print (bit)
             outputfile.write(bit)
-            essOutputfile.write(bits[0] + "\n")
+            essOutputfile.write(line[0] + "\n")
         elif(l) and not (v):
-            bit = bits[0]+",lethal\n"
+            bit = line[0]+",lethal\n"
             print (bit)
             outputfile.write(bit)
-            essOutputfile.write(bits[0] + "\n")
+            essOutputfile.write(line[0] + "\n")
         elif ((not l) and (not v) and (not o)):
             print("Not Viable OR Lethal")
 
 outputfile.close()
 
-
+sys.exit("SDSD") #### Still problems.. mel]" should be mel - check singleleth Genes
 ############################################################################################
 
 __author__ = 'nid16'

@@ -53,7 +53,7 @@ def ontology_attributes():
 
 
 
-    oboFile = open('./go.obo','rb')
+    oboFile = open('Fly/go.obo','rb')
 
     #declare a blank dictionary
     #keys are the goids
